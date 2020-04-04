@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.smbms.mapper.Smbms_ProviderMapper" >
+    <!--查供应商-->
+    <select id="getProviderByName" resultType="Smbms_Provider">
+        select * from smbms_provider
+        <where>
+            <if test="proName!='' and proName!=null">
+                and proName like concat('%',#{proName},'%')
+            </if>
+        </where>
+    </select>
+    <!--id查供应商数据-->
+    <select id="getProviderByID" resultType="Smbms_Provider">
+        select * from smbms_provider where pid = #{pid}
+    </select>
+    <!--删除订单数据-->
+    <delete id="deleteProvider">
+        delete from smbms_provider where proCode = #{proCode}
+    </delete>
+
+
+    <!--验证供应商id-->
+    <select id="checkProviderCode" resultType="java.lang.Integer">
+        select count(1) from smbms_provider where proCode = #{proCode}
+    </select>
+
+    <!--添加供应商数据-->
+    <insert id="addProvider" >
+        insert into smbms_provider(proCode,proName,proContact,proPhone,proAddress,proFax,proDesc)
+        value (#{procode},#{proname},#{procontact},#{prophone},#{proaddress},#{profax},#{prodesc})
+    </insert>
+    <!--更改供应商数据-->
+    <update id="updateProvider">
+        update smbms_provider set procode=#{procode},proname=#{proname},procontact=#{procontact}
+        ,prophone=#{prophone},proaddress=#{proaddress},profax=#{profax},prodesc=#{prodesc} where pid=#{pid}
+    </update>
+</mapper>

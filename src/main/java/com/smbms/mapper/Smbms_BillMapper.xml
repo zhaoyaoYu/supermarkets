@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smbms.mapper.Smbms_BillMapper" >
+  <resultMap id="billAndProMap" type="Smbms_Bill">
+    <!--植入一的一方的对象-->
+    <association property="smbms_provider" javaType="Smbms_Provider"/>
+  </resultMap>
+
+
+  <select id="getBillList" resultMap="billAndProMap">
+    select * from smbms_bill,smbms_provider where smbms_bill.providerId=smbms_provider.pid
+    <if test="productName!='' and productName!=null">
+      and smbms_bill.productName like concat('%',#{productName},'%')
+    </if>
+    <if test="providerId!=0">
+      and smbms_bill.providerId=#{providerId}
+    </if>
+    <if test="isPayment!=0">
+      and smbms_bill.isPayment=#{isPayment}
+    </if>
+  </select>
+
+
+
+  <!--根据id查商品数据-->
+  <select id="getBillByID" resultMap="billAndProMap">
+        select * from smbms_bill,smbms_provider where smbms_bill.providerId=smbms_provider.pid
+         and smbms_bill.bid=#{bid}
+    </select>
+
+  <!--验证商品编码-->
+  <select id="checkBillCode" resultType="java.lang.Integer">
+        select count(1) from smbms_bill where billcode=#{billcode}
+    </select>
+  <!--添加商品-->
+  <insert id="addBill" >
+        insert into smbms_bill(billCode,productName,productUnit,productCount,totalPrice,providerId,isPayment)
+				values (#{billcode},#{productname},#{productunit},#{productcount},#{totalprice},#{providerid},#{ispayment})
+    </insert>
+
+  <!--修改商品信息    -->
+  <update id="updateBill">
+        update smbms_bill set billcode=#{billcode},productname=#{productname},productunit=#{productunit},productcount=#{productcount},totalprice=#{totalprice}
+        ,providerid=#{providerid},ispayment=#{ispayment} where bid=#{bid}
+    </update>
+
+    <!--删除订单数据-->
+    <delete id="deleteBill">
+        delete from smbms_bill where bid = #{bid}
+    </delete>
+</mapper>
+
+

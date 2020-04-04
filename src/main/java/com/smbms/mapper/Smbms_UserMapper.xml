@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smbms.mapper.Smbms_UserMapper" >
+
+
+    <resultMap id="userRoleMap" type="Smbms_User">
+        <association property="smbms_role" javaType="Smbms_Role"/>
+    </resultMap>
+
+    <!--  //登录-->
+      <select id="userLogin" resultType="Smbms_User">
+        select * from  smbms_user where userCode=#{userCode} and userPassword=#{userPassword}
+      </select>
+
+
+    <!--修改密码的方法-->
+    <update id="updatePassword">
+          update Smbms_User set userpassword=#{newPassword} where id=#{id}
+      </update>
+
+
+    <!--查数据用户-->
+    <select id="getUserByName" resultMap="userRoleMap">
+        select * from smbms_user,smbms_role where smbms_user.userRole=smbms_role.rid
+        <if test="'userName'!='' and userName!=null">
+            and userName like concat('%',#{userName},'%')
+        </if>
+    </select>
+
+
+
+
+    <!--根据id查用户数据-->
+    <select id="getUseByID" resultMap="userRoleMap">
+         select * from smbms_user,smbms_role where smbms_user.userRole=smbms_role.rid
+         and smbms_user.id=#{id}
+    </select>
+
+    <!--验证用户编码-->
+    <select id="checkUserCode" resultType="java.lang.Integer">
+        select count(1) from smbms_user where usercode=#{usercode}
+    </select>
+    <!--添加用户-->
+    <insert id="addUser" >
+        insert into smbms_user(userCode,userName,userPassword,gender,birthday,phone,address,userRole,createdBy,creationDate)
+				values (#{usercode},#{username},#{userpassword},#{gender},#{birthday},#{phone},#{address},#{userrole},#{createdby},#{creationdate})
+    </insert>
+
+    <!--修改有【用户信息    -->
+    <update id="updateUser">
+        update smbms_user set username=#{username},gender=#{gender},birthday=#{birthday},phone=#{phone},address=#{address}
+        ,modifyby=#{modifyby},modifyDate=#{modifydate},userrole=#{userrole} where id=#{id}
+    </update>
+
+    <!--更改用户状态-->
+    <update id="userIsDelete">
+        update smbms_user set isdelete=#{isDelete} where id=#{id}
+    </update>
+</mapper>
